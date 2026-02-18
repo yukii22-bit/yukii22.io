@@ -1,0 +1,865 @@
+:root {
+  /* Colors */
+  --white-color:                  #ffffff;
+  --primary-color:                #11181c;          /* used for text / primary accents */
+  --secondary-color:              rgba(128, 208, 199, 1); /* corrected to valid rgba */
+  --section-bg-color:             #192731;          /* dark section backgrounds */
+  --custom-btn-bg-color:          #80d0c7;          /* primary CTA color */
+  --custom-btn-bg-hover-color:    #13547a;          /* CTA hover */
+  --dark-color:                   #000000;
+  --p-color:                      #0b0400;          /* default paragraph color (overrideable) */
+  --border-color:                 #7fffd4;
+  --link-hover-color:             #aedc43;
+
+  /* Fonts */
+  --body-font-family:             'Open Sans', sans-serif;
+  --title-font-family:            'Montserrat', sans-serif;
+
+  /* Typographic scale (change to scale site-wide) */
+  --h1-font-size:                 58px;
+  --h2-font-size:                 46px;
+  --h3-font-size:                 32px;
+  --h4-font-size:                 28px;
+  --h5-font-size:                 24px;
+  --h6-font-size:                 22px;
+  --p-font-size:                  20px;
+  --menu-font-size:               14px;
+  --btn-font-size:                18px;
+  --copyright-font-size:          16px;
+
+  /* Radii */
+  --border-radius-large:          100px;
+  --border-radius-medium:         20px;
+  --border-radius-small:          10px;
+
+  /* Font weights */
+  --font-weight-normal:           400;
+  --font-weight-medium:           500;
+  --font-weight-semibold:         600;
+  --font-weight-bold:             700;
+}
+
+/* ==========================================================================
+   2) GLOBAL BASE / RESET STYLES
+   - Purpose: basic defaults for typography, links, and global spacing.
+   - Applied to: entire document.
+   ========================================================================== */
+/* Box-sizing for easier sizing calculations */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Base HTML/body */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--body-font-family);
+  color: var(--p-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #000; /* preserved from  original page background */
+}
+
+/* Default link and button behaviour */
+a, button {
+  touch-action: manipulation;
+  transition: all 0.3s ease;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  display: inline-block;
+}
+a:hover { color: var(--link-hover-color); }
+
+/* Paragraphs and lists */
+p, ul, ol {
+  margin: 0 0 1rem 0;
+}
+p {
+  color: var(--p-color);
+  font-size: var(--p-font-size);
+  font-weight: var(--font-weight-normal);
+}
+ul li {
+  color: var(--p-color);
+  font-size: var(--p-font-size);
+}
+
+/* Headings: use title font. Individual sizes below. */
+h1,h2,h3,h4,h5,h6 {
+  font-family: var(--title-font-family);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 0.6rem 0;
+  color: var(--white-color);
+}
+
+/* Specific heading sizes */
+h1 { font-size: var(--h1-font-size); font-weight: var(--font-weight-bold); }
+h2 { font-size: var(--h2-font-size); font-weight: var(--font-weight-bold); }
+h3 { font-size: var(--h3-font-size); }
+h4 { font-size: var(--h4-font-size); }
+h5 { font-size: var(--h5-font-size); }
+h6 { font-size: var(--h6-font-size); color: var(--primary-color); }
+
+/* Utility: visually-hidden for accessibility (used by forms/labels when needed) */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   3) LAYOUT CONTAINERS & GLOBAL SECTION RULES
+   - Purpose: default section spacing, max width, center container behaviour.
+   - Applied to: all <section> elements and main containers
+   - Notes: merged duplicate 'section' rules from original file.
+   ========================================================================== */
+
+/* Global section wrapper: constrains content and adds gap between sections
+   HTML: applies to every <section> in the markup. */
+section {
+  max-width: 1600px;             /* visual width of each section */
+  margin: 0 auto 30px;           /* centered; 30px gap below each section */
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+/* Utility class for consistent vertical padding used across many sections:
+   HTML: add .section-padding to a section to give it larger vertical spacing. */
+.section-padding {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  position: relative;
+}
+
+/* Background helper (dark section background)
+   HTML: add .section-bg when a dark background is desired. */
+.section-bg {
+  background-color: var(--section-bg-color);
+}
+
+/* Section overlay helper used where an overlay gradient is applied over media.
+   HTML: element structure typically: <section><div class="section-overlay"></div><div class="container">...</div></section>
+   NOTE: .section-overlay is absolutely positioned; following .container must be positioned relative.
+*/
+.section-overlay {
+  background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.section-overlay + .container { position: relative; z-index: 1; }
+
+/* Tab content container with white card background */
+.tab-content {
+  background-color: var(--white-color);
+  border-radius: var(--border-radius-medium);
+  padding: 24px;
+}
+
+/* ==========================================================================
+   4) NAVIGATION / HEADER
+   - Purpose: site header, brand, nav links, dropdown behaviour, sticky state.
+   - Target HTML: <nav class="navbar">, .navbar-brand, .navbar-nav, .navbar-toggler etc.
+   - Notes: merged dropdown hover behaviour and mobile behaviour.
+   ========================================================================== */
+
+/* Sticky wrapper (used by sticky plugin) */
+.sticky-wrapper {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+}
+
+/* When sticky is active, apply secondary color background for contrast
+   HTML: class added dynamically: .sticky-wrapper.is-sticky */
+.sticky-wrapper.is-sticky .navbar {
+  background-color: var(--secondary-color);
+}
+
+/* Base navbar style */
+.navbar {
+  background: transparent;
+  border-bottom: 1px solid rgba(128, 208, 199, 0.35);
+  z-index: 9;
+  padding: 0.6rem 0;
+}
+
+/* Brand (logo text) */
+.navbar-brand {
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-weight-bold);
+  display: block;
+}
+.navbar-brand span { font-family: var(--title-font-family); }
+
+/* Navbar links group (desktop) */
+.navbar-nav .nav-link {
+  display: inline-block;
+  color: var(--white-color);
+  font-family: var(--title-font-family);
+  font-size: var(--menu-font-size);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 15px;
+  border-radius: var(--border-radius-large);
+}
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover { color: var(--primary-color); }
+
+/* Toggler icon (hamburger) - animated into X when opened */
+.navbar-toggler {
+  border: 0;
+  padding: 0;
+  width: 30px;
+  height: 35px;
+  background: transparent;
+}
+.navbar-toggler .navbar-toggler-icon {
+  display: block;
+  width: 30px; height: 2px;
+  background: var(--white-color);
+  position: relative;
+  transition: background .3s;
+}
+.navbar-toggler .navbar-toggler-icon::before,
+.navbar-toggler .navbar-toggler-icon::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px; width: 30px;
+  background: var(--white-color);
+  transition: transform .3s, top .3s;
+}
+.navbar-toggler .navbar-toggler-icon::before { top: -8px; }
+.navbar-toggler .navbar-toggler-icon::after  { top: 8px; }
+
+/* When toggler expanded -> rotate lines to form X.
+   Note: bootstrap sets [aria-expanded="true"], we use attribute selector. */
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon { background: transparent; }
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before { transform: rotate(45deg); top: 0; }
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after  { transform: rotate(-45deg); top: 0; }
+
+/* Navbar icon used for small-screen quick links (profile icon etc.) */
+.navbar-icon {
+  background: var(--white-color);
+  border-radius: var(--border-radius-large);
+  width: 40px; height: 40px;
+  display: inline-block;
+  line-height: 40px;
+  text-align: center;
+  transition: all .3s;
+}
+.navbar-icon:hover { background: var(--primary-color); color: var(--white-color); }
+
+/* Dropdown menu (desktop hover) - start hidden, show on hover (desktop) */
+.navbar .dropdown-menu {
+  background: var(--white-color);
+  box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+  border: 0;
+  min-width: 9rem;
+  margin-top: 20px;
+  padding: 13px 0 10px 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .3s;
+}
+@media (min-width: 992px) {
+  .navbar .dropdown:hover .dropdown-menu {
+    opacity: 1;
+    margin-top: 0;
+    pointer-events: auto;
+  }
+}
+/* little arrow for dropdown */
+.navbar .dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  width: 0; height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 15px solid var(--white-color);
+}
+
+/* Dropdown items */
+.navbar .dropdown-item {
+  display: inline-block;
+  color: var(--primary-color);
+  font-family: var(--title-font-family);
+  font-size: var(--menu-font-size);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 6px 14px;
+}
+.navbar .dropdown-item:hover { color: var(--primary-color); background: transparent; }
+
+/* ==========================================================================
+   5) HERO / INTRO SECTION
+   - Purpose: large banner with background image, heading, CTA, and floating hero image.
+   - Target HTML: <section class="hero-section" id="section_1"> ... </section>
+   - Notes: hero background uses overlay + image cover; hero-image animation kept.
+   ========================================================================== */
+
+.hero-section {
+  background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+  position: relative;
+  overflow: hidden;
+  padding-top: 150px;
+  padding-bottom: 150px;
+  color: var(--white-color);
+}
+
+/* Background image for #section_1 (fallback overlay + image),
+   kept in ID selector since it referenced a specific section with an image. */
+#section_1 {
+  position: relative;
+  background:
+    linear-gradient(rgba(19, 84, 122, 0.7), rgba(128, 208, 199, 0.7)),
+    url('../images/down.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 85vh;
+  padding: 100px 0;
+}
+/* fallback color if image fails */
+#section_1 { background-color: #13547a; }
+#section_1 > .container { position: relative; z-index: 2; }
+
+/* search input group inside hero (if present) */
+.hero-section .input-group {
+  background-color: var(--white-color);
+  border-radius: var(--border-radius-large);
+  padding: 10px 15px;
+}
+.hero-section .input-group-text { background-color: transparent; border: 0; }
+.hero-section input[type="search"] { border: 0; box-shadow: none; padding-left: 0; }
+.hero-section button[type="submit"] {
+  background-color: var(--primary-color);
+  border: 0;
+  border-radius: var(--border-radius-large) !important;
+  color: var(--white-color);
+  max-width: 150px;
+}
+
+/* Hero image: floating animation and hover scale
+   Target HTML: <img id="hero-image" class="hero-image"> inside hero column. */
+.hero-image {
+  --shadow-color: rgba(19, 84, 122, 0.4);
+  animation: float 5s ease infinite;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-block;
+}
+.hero-image:hover {
+  transform: scale(1.05) rotate(-1deg); /* reduced scale to prevent layout overflow */
+  --shadow-color: rgba(13, 36, 49, 0.6);
+}
+
+/* heading animations (kept small) */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+/* ==========================================================================
+   6) FEATURED / TOPICS CARDS (custom-block, custom-block-overlay)
+   - Purpose: visual cards used for projects, featured items, topics listing.
+   - Target HTML: .featured-section, .custom-block, .custom-block-overlay, .custom-block-image
+   - Notes: merged duplicated custom-block definitions, preserved hover behavior.
+   ========================================================================== */
+
+/* Featured section wrapper (curved bottom shape originally) */
+.featured-section {
+  background-color: var(--secondary-color);
+  border-radius: 0 0 100px 100px;
+  padding-bottom: 100px;
+}
+
+/* Small adjustment for the row offset used in original template */
+.featured-section .row {
+  position: relative;
+  bottom: 100px;
+  margin-bottom: -100px;
+}
+
+/* Card base (used across topics, finance blocks, etc.)
+   HTML: .custom-block (wraps an <a> and image/text)
+   Customization: adjust padding, border-radius, or box-shadow here. */
+.custom-block {
+  border-radius: var(--border-radius-medium);
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+  transition: transform .3s ease, background .3s ease, box-shadow .3s ease;
+  height: 100%;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
+}
+.custom-block:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 30px rgba(0,0,0,0.12);
+}
+
+/* clickable area full width */
+.custom-block > a { display:block; width:100%; height:100%; color:inherit; }
+
+/* image inside card */
+.custom-block-image {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  margin-top: 35px;
+  border-radius: 12px;
+}
+
+/* small pill/badge inside card (rounded count badges) */
+.custom-block .rounded-pill {
+  border-radius: 5px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 20px;
+}
+
+/* overlay card variant: large image with overlay text and CTAs */
+.custom-block-overlay {
+  height: 100%;
+  min-height: 350px;
+  padding: 0;
+  overflow: hidden;
+}
+.custom-block-overlay > a { height: 100%; display:block; }
+.custom-block-overlay .custom-block-image {
+  border-radius: var(--border-radius-medium);
+  display: block;
+  height: 100%;
+  margin-top: 0;
+  object-fit: cover;
+}
+
+/* overlay text area positioned on top of image */
+.custom-block-overlay-text {
+  position: absolute;
+  z-index: 2;
+  top: 0; left: 0; right: 0;
+  padding: 30px;
+  color: #fff;
+}
+
+/* social / bottom CTA area inside overlay cards */
+.social-share {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 2;
+  padding: 20px 35px;
+  display:flex;
+  align-items:center;
+}
+.social-share .bi-bookmark { color: var(--white-color); font-size: var(--h5-font-size); }
+.social-share .bi-bookmark:hover { color: var(--secondary-color); }
+
+/* topic/category background helpers */
+.bg-design { background-color: #00B0FF; }
+.bg-graphic { background-color: #00BFA6; }
+.bg-advertising { background-color: #F50057; }
+.bg-finance { background-color: #536DFE; }
+.bg-music { background-color: #F9A826; }
+.bg-education { background-color: #00BFA6; }
+
+/* custom-block variants used on topics listing pages */
+.topics-detail-block { border-radius: var(--border-radius-medium); position:relative; overflow:hidden; }
+.topics-detail-block-image { display:block; border-radius: var(--border-radius-medium); }
+
+/* small listing variants */
+.custom-block-topics-listing .custom-block-image { width: 200px; }
+
+/* ==========================================================================
+   7) PAGINATION
+   - Purpose: styling for pagination controls used on listing pages.
+   - Target HTML: .pagination, .page-link, .page-item
+   ========================================================================== */
+.pagination { margin-top: 40px; }
+.page-link {
+  border: 0;
+  border-radius: var(--border-radius-small);
+  color: var(--p-color);
+  font-family: var(--title-font-family);
+  margin: 0 5px;
+  padding: 10px 20px;
+}
+.page-link:hover { background-color: var(--secondary-color); color: var(--white-color); }
+.page-item:first-child .page-link,
+.page-item:last-child .page-link { background-color: var(--section-bg-color); }
+
+/* active state */
+.page-item .page-link.active,
+.page-link.active { background-color: var(--secondary-color); border-color: var(--secondary-color); color: var(--white-color); }
+
+/* ==========================================================================
+   8) TIMELINE (vertical timeline used on specific pages)
+   - Purpose: visual vertical timeline with icons and progress bar
+   - Target HTML: .timeline-container .vertical-scrollable-timeline
+   ========================================================================== */
+.timeline-section { position: relative; background-size: cover; background-position:center; background-repeat:no-repeat; }
+.timeline-container .vertical-scrollable-timeline { list-style: none; position: relative; padding-left: 0; }
+.timeline-container .vertical-scrollable-timeline .list-progress {
+  width: 8px; height: 87%;
+  background-color: var(--primary-color);
+  position: absolute; left: 52px; top: 0; overflow:hidden;
+}
+.timeline-container .vertical-scrollable-timeline .list-progress .inner { position:absolute; right:0; bottom:0; height:100%; width:100%; background-color: var(--secondary-color); }
+.timeline-container .vertical-scrollable-timeline li { position: relative; padding: 20px 0 65px 145px;}
+.timeline-container .vertical-scrollable-timeline li .icon-holder {
+  position: absolute; left: 0; top: 0; width: 104px; height: 104px; display:flex; justify-content:center; align-items:center;
+  background-color: var(--secondary-color); border-radius:50%; z-index:1; transition: all .4s;
+}
+.timeline-container .vertical-scrollable-timeline li .icon-holder::before {
+  content:""; width:80px; height:80px; border:4px solid #fff; position:absolute; background-color:var(--secondary-color); border-radius:50%; z-index:-1; transition: all .4s;
+}
+.timeline-container .vertical-scrollable-timeline li.active .icon-holder,
+.timeline-container .vertical-scrollable-timeline li.active .icon-holder::before {
+  background-color: var(--primary-color);
+}
+
+/* ==========================================================================
+   9) FAQ (Accordion)
+   - Purpose: styles for collapsible FAQ accordions
+   - Target HTML: .faq-section .accordion-*
+   ========================================================================== */
+.faq-section .accordion-item { border:0; }
+.faq-section .accordion-button { font-size: var(--h6-font-size); font-weight: var(--font-weight-semibold); }
+.faq-section .accordion-button:not(.collapsed) { border-radius: var(--border-radius-large); box-shadow: none; color: var(--primary-color); }
+.faq-section .accordion-body { color: var(--p-color); font-size: var(--btn-font-size); line-height: 40px; }
+
+/* ==========================================================================
+   10) FORMS, CONTACT, MAPS
+   - Purpose: contact page form, google map, form controls, subscribe box
+   - Target HTML: .contact-section, .contact-form, .google-map, .subscribe-form
+   - Notes: preserved custom contact-section gradient and hover fix
+   ========================================================================== */
+
+/* Contact section: full block used in contact page (#section_5 in original) */
+.contact-section {
+  font-family: 'Poppins', sans-serif;
+  color: #abb409;
+  font-size: 1.05rem;
+  text-align: left;
+  line-height: 1.7;
+  padding: 30px;
+  background: linear-gradient(135deg, #0a1f3a 0%, #13547a 100%);
+  transition: background 0.5s ease;
+  position: relative; /* required for pseudo background layering */
+}
+
+/* :hover gradient for contact area — visual flourish; safe since used on non-critical elements */
+.contact-section:hover {
+  background: linear-gradient(135deg, #192731 0%, #416172 100%);
+  color: #bfe30d;
+  text-shadow: none;
+}
+
+/* Fix flicker when transitioning background: create pseudo element with inherited background */
+.contact-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  z-index: -1;
+  transition: inherit;
+}
+
+/* Google map styling */
+.google-map { border-radius: var(--border-radius-medium); width: 100%; }
+
+/* Contact form textarea */
+.contact-form .form-floating>textarea { border-radius: var(--border-radius-medium); height: 150px; }
+
+/* Subscribe block */
+.subscribe-form-wrap { padding: 50px; }
+.subscribe-form { width: 95%; }
+
+/* ==========================================================================
+   11) CUSTOM FORM CONTROLS
+   - Purpose: consistent styling for text inputs, search boxes, submit buttons
+   - Target HTML: .custom-form .form-control, .custom-form button[type="submit"]
+   ========================================================================== */
+.custom-form .form-control {
+  border-radius: var(--border-radius-large);
+  color: var(--p-color);
+  margin-bottom: 24px;
+  padding: 13px 20px;
+  outline: none;
+}
+.form-floating > label { padding-left: 20px; }
+
+.custom-form button[type="submit"] {
+  background: var(--custom-btn-bg-color);
+  border: none;
+  border-radius: var(--border-radius-large);
+  color: var(--white-color);
+  font-family: var(--title-font-family);
+  font-size: var(--p-font-size);
+  font-weight: var(--font-weight-semibold);
+  transition: all .3s;
+}
+.custom-form button[type="submit"]:hover,
+.custom-form button[type="submit"]:focus {
+  background: var(--custom-btn-bg-hover-color);
+}
+
+/* ==========================================================================
+   12) BUTTONS & CTAs
+   - Purpose: main button styles used across site (.custom-btn, .custom-border-btn)
+   - Target HTML: .custom-btn, .custom-border-btn
+   ========================================================================== */
+.custom-btn {
+  background: var(--custom-btn-bg-color);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-large);
+  color: var(--white-color);
+  font-size: var(--btn-font-size);
+  font-weight: var(--font-weight-semibold);
+  padding: 10px 20px;
+  transition: all .3s;
+}
+.custom-btn:hover { background: var(--custom-btn-bg-hover-color); color: var(--white-color); }
+
+.custom-border-btn {
+  background: transparent;
+  border: 2px solid var(--custom-btn-bg-color);
+  color: var(--custom-btn-bg-color);
+}
+.custom-border-btn:hover {
+  background: var(--custom-btn-bg-color);
+  border-color: transparent;
+  color: var(--white-color);
+}
+
+/* small white-border variant */
+.custom-btn-bg-white { border-color: var(--white-color); color: var(--white-color); }
+
+/* ==========================================================================
+   13) SITE FOOTER
+   - Purpose: styling for footer area including diagonal edge and corner triangle
+   - Target HTML: <footer class="site-footer"> ... </footer>
+   ========================================================================== */
+.site-footer {
+  position: relative;
+  background: linear-gradient(135deg, #0a1f3a 0%, #13547a 100%);
+  color: var(--white-color);
+  padding: 60px 0 40px;
+  overflow: hidden;
+  font-family: var(--body-font-family);
+}
+.site-footer::before {
+  content: "";
+  position: absolute;
+  top: -10px; left: 0;
+  width: 100%; height: 20px;
+  background: linear-gradient(to bottom right, transparent 49%, var(--secondary-color) 50%);
+  z-index: 0;
+}
+.site-footer::after {
+  content: "";
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 0 200px 200px;
+  border-color: transparent transparent rgba(128, 208, 199, 0.3) transparent;
+  z-index: 1;
+}
+.site-footer .container { position: relative; z-index: 2; }
+
+/* Footer title / links */
+.site-footer-title {
+  color: var(--custom-btn-bg-color);
+  font-family: var(--title-font-family);
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: .5px;
+  margin-bottom: 20px; text-transform: uppercase;
+}
+.site-footer-link { color: rgba(255,255,255,0.8); text-decoration:none; display:inline-block; transition: all .3s; }
+.site-footer-link:hover { transform: translateX(5px); color: var(--custom-btn-bg-color); }
+
+/* Footer dropdown menu (styled darker than header dropdowns) */
+.site-footer .dropdown-menu { background: rgba(10,31,58,0.9); border: 1px solid var(--secondary-color); backdrop-filter: blur(5px); }
+.site-footer .dropdown-item { color: rgba(255,255,255,0.8); }
+.site-footer .dropdown-item:hover { color: var(--white-color); padding-left: 22px; }
+
+/* Copyright area */
+.copyright-text { font-size: .85rem; color: rgba(255,255,255,0.6); margin-top: 30px; padding-top: 20px; position: relative; }
+.copyright-text::before { content: ""; position: absolute; top:0; left:0; width:100px; height:1px; background: linear-gradient(to right, var(--secondary-color), transparent); }
+
+/* ==========================================================================
+   14) SOCIAL ICONS
+   - Purpose: small circular social icons used in footer / share components
+   - Target HTML: .social-icon, .social-icon-item, .social-icon-link
+   ========================================================================== */
+.social-icon { margin:0; padding:0; }
+.social-icon-item { list-style:none; display:inline-block; vertical-align:top; }
+.social-icon-link {
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-large);
+  color: var(--white-color);
+  font-size: var(--copyright-font-size);
+  display:block; margin-right:10px;
+  text-align:center; width:35px; height:35px; line-height:36px;
+  transition: background .2s, color .2s;
+}
+.social-icon-link:hover { background: var(--primary-color); color: var(--white-color); }
+
+/* ==========================================================================
+   15) SKILL BAR (small animated gradient bars used in a side block)
+   - Purpose: small gradient skill bar with hover animation
+   - Target HTML: .skill-bar-wrapper .skill-bar-container .skill-bar-gradient
+   ========================================================================== */
+.skill-bar-wrapper { width:100%; padding:10px 0; }
+.skill-bar-container { width:100%; height:20px; background:#f0f0f0; border-radius:10px; overflow:hidden; position:relative; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+.skill-bar-gradient { width:100%; height:100%; background-size:300% 100%; transition: all .5s ease; border-radius:10px; position:relative; }
+.skill-bar-container:hover .skill-bar-gradient { animation: gradientFlow 3s ease infinite; }
+@keyframes gradientFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+.skill-bar-gradient::after { content:''; position:absolute; inset:0; background: linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,0) 50%); border-radius:10px; pointer-events:none; }
+
+/* color variations used by HTML classes: .skill-bar-gradient.color-1 | color-2 | color-3 */
+.skill-bar-gradient.color-1 { background: linear-gradient(90deg,#0C342C 0%, #076653 50%, #E3EF26 100%); }
+.skill-bar-gradient.color-2 { background: linear-gradient(90deg,#E3EF26 0%, #076653 50%, #0C342C 100%); }
+.skill-bar-gradient.color-3 { background: linear-gradient(90deg,#076653 0%, #E3EF26 50%, #0C342C 100%); }
+
+/* ==========================================================================
+   16) MISC / HELPERS (blockquote, hr, small tweaks)
+   ========================================================================== */
+blockquote {
+  background-color: var(--section-bg-color);
+  border-radius: var(--border-radius-small);
+  font-family: var(--title-font-family);
+  font-size: var(--h4-font-size);
+  font-weight: var(--font-weight-bold);
+  display: inline-block;
+  text-align: center;
+  margin: 30px;
+  padding: 40px;
+}
+
+hr.fancy {
+  background: linear-gradient(to right, transparent, #80d0c7, transparent);
+  height: 2px;
+  border: none;
+}
+
+/* Custom styles for About Me box override (keeps earlier intent but structured)
+   Target HTML: .custom-block-overlay.bg-white .custom-block-overlay-text */
+.custom-block-overlay.bg-white .custom-block-overlay-text { color:#eaf0f6; font-family:'Poppins', sans-serif; }
+.custom-block-overlay.bg-white .custom-block-overlay-text h5 { color:#041928; font-family:'Montserrat', sans-serif; font-weight:700; font-size:1.5rem; }
+.custom-block-overlay.bg-white .custom-block-overlay-text p { color:#ffffff; font-family:'Open Sans', sans-serif; font-size:1rem; line-height:1.6; }
+
+/* Welcome line (hero intro small callout) */
+.welcome-line {
+  color: rgba(255,255,255,0.95);
+  font-family: 'Montserrat','Open Sans', Arial, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: .5px;
+  text-shadow: 1px 2px 8px rgba(226,45,45,0.08);
+  animation: fadeInUp 1.2s ease-out;
+  background: linear-gradient(90deg, #e0b78208 0%, #fcb69f01 100%);
+  border-radius: 8px;
+  padding: 18px 24px;
+  margin-bottom: 18px;
+  display: inline-block;
+}
+@keyframes fadeInUp { from { opacity:0; transform: translateY(30px);} to { opacity:1; transform: translateY(0);} }
+
+/* ==========================================================================
+   17) RESPONSIVE BREAKPOINTS
+   - Purpose: stack and resize typography / components for small screens
+   - Notes: condensed and merged mobile rules from original file.
+   ========================================================================== */
+@media (max-width: 991px) {
+  h1 { font-size: 48px; }
+  h2 { font-size: 36px; }
+  h3 { font-size: 32px; }
+  h4 { font-size: 28px; }
+  h5 { font-size: 20px; }
+  h6 { font-size: 18px; }
+
+  .section-padding { padding-top: 50px; padding-bottom: 50px; }
+
+  /* Make dropdown menus accessible on mobile (display inline) */
+  .navbar-nav .dropdown-menu { position: relative; left: 10px; opacity: 1; pointer-events: auto; max-width: 155px; margin-top: 10px; margin-bottom: 15px; }
+
+  .navbar-expand-lg .navbar-nav { padding-bottom: 20px; }
+  .navbar-expand-lg .navbar-nav .nav-link { padding: 0; }
+
+  .nav-tabs .nav-link:first-child { margin-right: 5px; }
+  .nav-tabs .nav-link { font-size: var(--copyright-font-size); padding: 10px; }
+
+  .featured-section { border-radius: 0 0 80px 80px; padding-bottom: 50px; }
+
+  .custom-block-topics-listing .custom-block-image { width: auto; }
+
+  .timeline-container .vertical-scrollable-timeline .list-progress { height: 75%; }
+  .timeline-container .vertical-scrollable-timeline li { padding-left: 135px; }
+
+  .subscribe-form-wrap { padding-top: 30px; padding-bottom: 0; }
+
+  .explore-section { padding: 60px 20px; } /* from earlier explore-section responsive change */
+}
+
+@media (max-width: 767px) {
+  .section-title { font-size: 32px; }
+  .explore-section { padding: 60px 20px; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 36px; }
+  h2 { font-size: 28px; }
+  h3 { font-size: 26px; }
+  h4 { font-size: 22px; }
+  h5 { font-size: 20px; }
+}
+
+/* ==========================================================================
+   18) EXLORE / PROJECTS SECTION (renamed from "explore-section" area)
+   - Purpose: projects/tabs area styling pulled from both parts, curated here.
+   - Target HTML: .explore-section, .custom-tabs, .custom-badge
+   ========================================================================== */
+.explore-section {
+  background: linear-gradient(to bottom, #d8f59f, #c9e265);
+  padding: 80px 40px;
+  border-radius: 18% 18% 18% 18% / 18% 18% 18% 18%;
+  margin-bottom: 60px;
+}
+.explore-section .container { max-width: 1400px; }
+
+.section-title { font-size: 42px; font-weight:700; color:#333; letter-spacing:1px; }
+
+.custom-tabs .nav-link {
+  font-size: 18px; font-weight:600; padding:12px 25px; color:#333;
+  border-radius:8px 8px 0 0; transition: all .3s ease;
+}
+.custom-tabs .nav-link:hover { background-color:#bce353; color:#000; }
+.custom-tabs .nav-link.active { background-color:#99d323; color:#000; font-weight:700; }
+
+.custom-badge { background-color:#7fb30f; color:#fff; padding:8px 12px; font-size:14px; }
+
+/* Card tweak inside explore (keeps earlier .custom-block rules but reduce margin) */
+.custom-block { padding:25px; border-radius:20px; }
+
+/* End of stylesheet */
